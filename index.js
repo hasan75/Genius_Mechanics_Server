@@ -24,20 +24,21 @@ async function run (){
 
         const database = client.db("carMechanic");
         const servicesCollection = database.collection("services");
+        //GET API
+        app.get('/services', async(req,res)=>{
+            const cursor = servicesCollection.find({})
+            const services = await cursor.toArray();
+            res.send(services);
+        })
 
         //POST API
         app.post('/services', async(req,res) => {
-            console.log('Hit the POST API');
-        //     const service = {
-        //         "name": "ENGINE DIAGNOSTIC",
-        //         "price": "300",
-        //         "description": "Lorem ipsum dolor sit amet, consectetu radipisi cing elitBeatae autem aperiam nequ quaera molestias voluptatibus harum ametipsa.",
-        //         "img": "https://i.ibb.co/dGDkr4v/1.jpg"
-        //   }
-           res.send('Post hitted');
+            const service = req.body;
+            console.log('Hit the POST API', service);
 
-          //const result = await servicesCollection.insertOne(service)
-          //console.log(result)
+            const result = await servicesCollection.insertOne(service)
+            console.log(result)
+            res.json(result);
         })
         
 
