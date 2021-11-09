@@ -42,6 +42,15 @@ async function run (){
             res.json(service);
         })
 
+        //for Update Operation
+        app.get('/services/:id', async(req,res)=>{
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const service = await servicesCollection.findOne(query)
+            console.log('Load user with Id', id)
+            res.send(service);
+        })
+
         //POST API
         app.post('/services', async(req,res) => {
             const service = req.body;
@@ -50,6 +59,25 @@ async function run (){
             const result = await servicesCollection.insertOne(service)
             console.log(result)
             res.json(result);
+        })
+
+        //PUT API
+        app.put('/services/:id', async(req,res)=>{
+            const id = req.params.id;
+            const updatedService = req.body;
+            const filter = {_id: ObjectId(id)};
+            const options = {upsert: true};
+            const updateDoc = {
+                $set:{
+                    name:updatedService.name,
+                    price: updatedService.price,
+                    img: updatedService.img,
+                    description: updatedService.description
+                },
+            };
+            const result = await servicesCollection.updateOne(filter, updateDoc, options)
+            console.log('Updating Product', id);
+            res.json(result)
         })
 
         //DELETE API
